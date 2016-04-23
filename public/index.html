@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+	</head>
+	<body>
+		<form ng-app="app" ng-controller="addShopController" ng-submit="addShopFormHanlder()"
+			action="http://localhost:8080/api/shops" method="post">
+			Name:<input type="text" name="name" ng-model="shop.name" ></input><br>
+			Address:<textarea name="address" ng-model="shop.address"></textarea><br>
+			Mobile:<input type="text" name="mobile" ng-model="shop.mobile"></input><br>
+			<input type="submit" value="Add Shop"></input>
+		</form>
+
+		<script type="text/javascript">
+		
+			var app = angular.module("app", []);
+			app.factory("ShopService", function($http){
+				var service ={};
+				service.addShop = addShop;
+
+				function addShop(shopData, callback){
+					$http.post("http://localhost:8080/api/shops", shopData)
+						.sucess(function(response, status){
+							callback(response, status);
+						})
+						.error(function(response, status){
+							callback(response, status);
+						});
+				}
+				return service;
+			});
+
+			app.controller("addShopController", function($scope, ShopService){
+				$scope.shop = {name:"", address:"", mobile:""};
+				$scope.addShopFormHandler = function(){
+					console.log("Adding shop");
+
+					ShopService.addShop($scope.shop, function(response, status){
+						console.log("added shop")
+
+					});
+				};
+			});
+		</script>
+	</body>
+</html>
